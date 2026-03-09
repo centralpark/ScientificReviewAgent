@@ -12,8 +12,6 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "--from-pub-date", "2026-03-01",
-                "--until-pub-date", "2025-03-07"
             ]
         }
     ]

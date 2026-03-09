@@ -21,30 +21,17 @@ Set a polite contact email (recommended):
 
 from __future__ import annotations
 
-import argparse
-import csv
 import os
 import sys
 import time
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Iterable, Iterator
+from typing import Iterator
 
 import requests
 
 
 AACR_MEMBER_ID = 1086
-WORKS_URL = "https://api.crossref.org/works"
-DEFAULT_ROWS = 1000  # Crossref max
-
-
-@dataclass(frozen=True)
-class WorkRow:
-    doi: str
-    title: str
-    journal: str
-    issn: str
-    published: str
+WORKS_URL = "https://api.crossref.org/members/1086/works"
+DEFAULT_ROWS = 100  # Crossref max
 
 
 def _best_date_iso(item: dict) -> str:
@@ -65,43 +52,12 @@ def _best_date_iso(item: dict) -> str:
     return ""
 
 
-def _as_work_row(item: dict) -> WorkRow | None:
-    doi = (item.get("DOI") or "").strip()
-    if not doi:
-        return None
-
-    title = ""
-    t = item.get("title")
-    if isinstance(t, list) and t:
-        title = str(t[0]).strip()
-    elif isinstance(t, str):
-        title = t.strip()
-
-    journal = ""
-    ct = item.get("container-title")
-    if isinstance(ct, list) and ct:
-        journal = str(ct[0]).strip()
-    elif isinstance(ct, str):
-        journal = ct.strip()
-
-    issn = ""
-    issns = item.get("ISSN")
-    if isinstance(issns, list) and issns:
-        issn = ";".join([str(x).strip() for x in issns if str(x).strip()])
-    elif isinstance(issns, str) and issns.strip():
-        issn = issns.strip()
-
-    published = _best_date_iso(item)
-
-    return WorkRow(doi=doi, title=title, journal=journal, issn=issn, published=published)
-
-
 def iter_aacr_journal_articles(
     *,
     member_id: int = AACR_MEMBER_ID,
     issn: str | None = None,
-    from_pub_date: str | None = None,
-    until_pub_date: str | None = None,
+    from_deposit_date: str | None = None,
+    until_deposit_date: str | None = None,
     query: str | None = None,
     rows: int = DEFAULT_ROWS,
     mailto: str | None = None,
@@ -120,19 +76,20 @@ def iter_aacr_journal_articles(
     if rows < 1 or rows > 1000:
         raise ValueError("rows must be between 1 and 1000")
 
-    filters: list[str] = [f"member:{member_id}", "type:journal-article"]
+    # Crossref Filters:
+    # Change "from-pub-date" to "from-deposit-date"
+    filters: list[str] = []
     if issn:
         filters.append(f"issn:{issn}")
-    if from_pub_date:
-        filters.append(f"from-pub-date:{from_pub_date}")
-    if until_pub_date:
-        filters.append(f"until-pub-date:{until_pub_date}")
+    if from_deposit_date:
+        filters.append(f"from-deposit-date:{from_deposit_date}")
+    if until_deposit_date:
+        filters.append(f"until-deposit-date:{until_deposit_date}")
 
     params: dict[str, str | int] = {
         "filter": ",".join(filters),
-        "rows": rows,
         "cursor": "*",
-        "select": "DOI,title,container-title,ISSN,issued,published-print,published-online,created",
+        "rows": rows,
     }
     if query:
         params["query"] = query
@@ -188,88 +145,21 @@ def iter_aacr_journal_articles(
             time.sleep(delay_sec)
 
 
-def export_dois_csv(
-    out_path: str | Path,
-    *,
-    member_id: int = AACR_MEMBER_ID,
-    issn: str | None = None,
-    from_pub_date: str | None = None,
-    until_pub_date: str | None = None,
-    query: str | None = None,
-    mailto: str | None = None,
-    max_items: int | None = None,
-) -> int:
-    path = Path(out_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    n = 0
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(
-            f,
-            fieldnames=["DOI", "published", "journal", "ISSN", "title"],
-        )
-        w.writeheader()
-        for item in iter_aacr_journal_articles(
-            member_id=member_id,
-            issn=issn,
-            from_pub_date=from_pub_date,
-            until_pub_date=until_pub_date,
-            query=query,
-            mailto=mailto,
-            max_items=max_items,
-        ):
-            row = _as_work_row(item)
-            if row is None:
-                continue
-            w.writerow(
-                {
-                    "DOI": row.doi,
-                    "published": row.published,
-                    "journal": row.journal,
-                    "ISSN": row.issn,
-                    "title": row.title,
-                }
-            )
-            n += 1
-
-            if n % 5000 == 0:
-                print(f"Wrote {n} rows...", file=sys.stderr)
-
-    return n
-
-
-def parse_args(argv: list[str]) -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Export DOIs for AACR journals using Crossref.")
-    p.add_argument("--out", required=True, help="Output CSV path.")
-    p.add_argument("--issn", default=None, help="Filter by journal ISSN (print or electronic).")
-    p.add_argument("--from-pub-date", default=None, help="Filter from publication date (YYYY-MM-DD).")
-    p.add_argument("--until-pub-date", default=None, help="Filter until publication date (YYYY-MM-DD).")
-    p.add_argument("--query", default=None, help="Optional full-text query.")
-    p.add_argument("--max-items", type=int, default=None, help="Stop after this many works (debug/dev).")
-    p.add_argument("--mailto", default=None, help="Contact email for Crossref (or set CROSSREF_MAILTO env var).")
-    p.add_argument("--member-id", type=int, default=AACR_MEMBER_ID, help="Crossref member ID (default: 1086 AACR).")
-    return p.parse_args(argv)
-
-
-def main(argv: list[str]) -> int:
-    args = parse_args(argv)
-    mailto = args.mailto or os.environ.get("CROSSREF_MAILTO") or None
-
-    n = export_dois_csv(
-        args.out,
-        member_id=args.member_id,
-        issn=args.issn,
-        from_pub_date=args.from_pub_date,
-        until_pub_date=args.until_pub_date,
-        query=args.query,
-        mailto=mailto,
-        max_items=args.max_items,
-    )
-    print(f"Done. Wrote {n} DOIs to {args.out}")
+def main() -> int:
+    from_deposit_date = "2026-01-01"
+    until_deposit_date = "2026-03-09"
+    mailto = "siheng.he@rinuagene.com"
+    count = 0
+    for item in iter_aacr_journal_articles(from_deposit_date=from_deposit_date, until_deposit_date=until_deposit_date, mailto=mailto):
+        dois = item.get("DOI", "N/A")
+        print(f"DOI: {dois}")
+        count += 1
+    
+    print(f"\nTotal items fetched: {count}")
     if not mailto:
         print("Tip: set CROSSREF_MAILTO (recommended by Crossref) to identify your requests.", file=sys.stderr)
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:]))
+    raise SystemExit(main())
