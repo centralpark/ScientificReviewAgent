@@ -1,0 +1,1 @@
+web: python3 publish_dois.py
