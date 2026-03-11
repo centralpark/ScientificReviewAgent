@@ -1,1 +1,1 @@
-web: python3 aacr_journal_dois.py
+web: python3 process_aacr_dois.py

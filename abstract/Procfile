@@ -1,1 +1,1 @@
-web: python3 publish_dois.py
+web: python3 get_abstract.py

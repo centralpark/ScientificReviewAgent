@@ -147,8 +147,10 @@ def iter_aacr_journal_articles(
 
 
 def main() -> int:
-    years = [str(i) for i in range(2004, 2027)]
-    task_index = int(os.environ.get("CLOUD_RUN_TASK_INDEX", 0))
+    # years = [str(i) for i in range(2004, 2027)]
+    # task_index = int(os.environ.get("CLOUD_RUN_TASK_INDEX", 0))
+    years = ['2023']
+    task_index = 0
 
     if task_index < len(years):
         target_year = years[task_index]
@@ -173,6 +175,8 @@ def main() -> int:
             if article_type in ["journal-article", "proceedings-article"]:
                 writer.writerow([doi, title, article_type])
                 count += 1
+                if count % 1000 == 0:
+                    print(f"{count} items written so far...")
         
     print(f"Total items written: {count}")
 

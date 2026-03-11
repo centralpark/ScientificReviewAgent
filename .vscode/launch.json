@@ -12,6 +12,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
+                "--csv-file=gs://aacr-abstracts-data-lake/combined_aacr_results.csv",
+                "--batch-size=500",
+                "--failed-dois-json=gs://aacr-abstracts-data-lake/failed_dois_1773156557.json",
+                "--csv_file_path=dois.csv"
             ]
         }
     ]
