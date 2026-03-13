@@ -17,15 +17,16 @@ BATCH_SIZE = 500
 def process_batch(doi_batch):
     """
     Process a batch of DOIs using the Semantic Scholar API.
-    
+
     Returns:
         tuple: (jsonl_content: str, failed_dois: list)
     """
     print(f"Processing {len(doi_batch)} DOIs...")
-    
+
     # Use batch API to get details for all DOIs at once
     url = "https://api.semanticscholar.org/graph/v1/paper/batch"
-    
+    response = None
+
     try:
         response = requests.post(
             url,
@@ -35,8 +36,17 @@ def process_batch(doi_batch):
         )
         response.raise_for_status()
     except Exception as e:
-        print(f"Error calling Semantic Scholar API: {e}")
-        return "", doi_batch
+        print(f"Error calling Semantic Scholar API): {e}")
+        if response is None:
+            # completely failed to make request
+            return "", doi_batch
+        # handle specific bad request when status code available
+        elif response is not None and response.status_code == 400 and "No valid paper ids" in response.text:
+            print("All DOIs in this batch are invalid. Skipping batch.")
+            return "", []
+        else:
+            # for other types of errors, consider entire batch failed
+            return "", doi_batch
     
     data = response.json()
     
@@ -177,8 +187,14 @@ def main():
     parser.add_argument(
         '--failed-dois-json',
         type=str,
-        default=None,
+        default="gs://aacr-abstracts-data-lake/failed_dois_1773197197.json",
         help='Optional GCS path to JSON file containing failed DOIs to retry. If provided, loads DOIs from this JSON instead of CSV.'
+    )
+    parser.add_argument(
+        '--save-frequency',
+        type=int,
+        default=1000,
+        help='Number of processed batches to accumulate before saving to GCS. Default is 1000.'
     )
     args = parser.parse_args()
     print(sys.argv)

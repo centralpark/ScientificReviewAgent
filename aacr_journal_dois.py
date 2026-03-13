@@ -21,7 +21,7 @@ Set a polite contact email (recommended):
 
 from __future__ import annotations
 
-import csv
+import json
 import os
 import sys
 import time
@@ -51,6 +51,23 @@ def _best_date_iso(item: dict) -> str:
                 return f"{ymd[0]:04d}-{ymd[1]:02d}"
             if len(ymd) == 1:
                 return f"{ymd[0]:04d}"
+    return ""
+
+def _published_date_iso(item: dict) -> str:
+    """
+    Construct publicationDate from Crossref `published.date-parts`.
+    Returns YYYY-MM-DD / YYYY-MM / YYYY or empty string if unknown.
+    """
+    parts = ((item.get("published") or {}).get("date-parts") or [])
+    if not parts or not parts[0]:
+        return ""
+    ymd = parts[0]
+    if len(ymd) == 3:
+        return f"{ymd[0]:04d}-{ymd[1]:02d}-{ymd[2]:02d}"
+    if len(ymd) == 2:
+        return f"{ymd[0]:04d}-{ymd[1]:02d}"
+    if len(ymd) == 1:
+        return f"{ymd[0]:04d}"
     return ""
 
 
@@ -91,7 +108,7 @@ def iter_aacr_journal_articles(
         "cursor": "*",
         "rows": rows,
     }
-    params["select"] = "DOI,title,type"
+    params["select"] = "DOI,title,type,abstract,URL,published,container-title,issue,page"
     if query:
         params["query"] = query
     if mailto:
@@ -147,10 +164,10 @@ def iter_aacr_journal_articles(
 
 
 def main() -> int:
-    # years = [str(i) for i in range(2004, 2027)]
-    # task_index = int(os.environ.get("CLOUD_RUN_TASK_INDEX", 0))
-    years = ['2023']
-    task_index = 0
+    years = [str(i) for i in range(2004, 2027)]
+    task_index = int(os.environ.get("CLOUD_RUN_TASK_INDEX", 0))
+    # years = ['2004']
+    # task_index = 0
 
     if task_index < len(years):
         target_year = years[task_index]
@@ -161,29 +178,47 @@ def main() -> int:
     mailto = "siheng.he@rinuagene.com"
     max_items = None
     
-    local_path = f"aacr_results_{target_year}.csv"
+    local_path = f"aacr_results_{target_year}.jsonl"
     
     count = 0
-    with open(local_path, 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(['DOI', 'Title', 'Type'])
-        
-        for item in iter_aacr_journal_articles(from_pub_date=from_pub_date, until_pub_date=until_pub_date, mailto=mailto, max_items=max_items):
-            doi = item.get("DOI", "N/A")
-            title = item.get("title", ["N/A"])[0] if item.get("title") else "N/A"
-            article_type = item.get("type", "N/A")
-            if article_type in ["journal-article", "proceedings-article"]:
-                writer.writerow([doi, title, article_type])
-                count += 1
-                if count % 1000 == 0:
-                    print(f"{count} items written so far...")
+    with open(local_path, "w", encoding="utf-8") as f:
+        for item in iter_aacr_journal_articles(
+            from_pub_date=from_pub_date,
+            until_pub_date=until_pub_date,
+            mailto=mailto,
+            max_items=max_items,
+        ):
+            article_type = item.get("type") or ""
+            if article_type not in ["journal-article", "proceedings-article"]:
+                continue
+
+            record = {
+                "DOI": item.get("DOI") or "",
+                "title": (item.get("title") or [""])[0] if isinstance(item.get("title"), list) else (item.get("title") or ""),
+                "type": article_type,
+                "abstract": item.get("abstract") or "",
+                "URL": item.get("URL") or "",
+                "publicationDate": _published_date_iso(item),
+                "container-title": (item.get("container-title") or [""])[0]
+                if isinstance(item.get("container-title"), list)
+                else (item.get("container-title") or ""),
+                "issue": item.get("issue") or "", # journal-issue is not available
+                "page": item.get("page") or "",
+            }
+
+            f.write(json.dumps(record, ensure_ascii=False))
+            f.write("\n")
+
+            count += 1
+            if count % 1000 == 0:
+                print(f"{count} items written so far...")
         
     print(f"Total items written: {count}")
 
     # Upload to Google Cloud Storage so it persists!
     client = storage.Client()
     bucket = client.bucket("aacr-abstracts-data-lake")
-    blob = bucket.blob(f"aacr_results_{target_year}.csv")
+    blob = bucket.blob(f"aacr_results_{target_year}.jsonl")
     
     blob.upload_from_filename(local_path)
     print("Upload complete! Job finished.")

@@ -1,0 +1,527 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [2025, 10, 23]
+      ],
+      "date-time": "2025-10-23T16:34:21Z",
+      "timestamp": 1761237261216
+    },
+    "reference-count": 57,
+    "publisher": "American Association for Cancer Research (AACR)",
+    "issue": "10",
+    "content-domain": {
+      "domain": [
+        "aacrjournals.org"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [],
+    "published-print": {
+      "date-parts": [
+        [2004, 5, 15]
+      ]
+    },
+    "abstract": "\u003Cjats:title\u003EAbstract\u003C/jats:title\u003E\n               \u003Cjats:p\u003EPurpose: Retinoids, which include vitamin A (retinol; ROL) and its derivatives, have been investigated in the treatment of bladder cancer. We have shown that expression of the enzyme lecithin:ROL acyltransferase (LRAT), which converts ROL to retinyl esters, is reduced in several human cancers. Here we evaluated expression of LRAT protein and mRNA in normal and malignant bladder tissue specimens from human patients. We also examined the effect of retinoids on LRAT expression in bladder cancer cell lines.\u003C/jats:p\u003E\n               \u003Cjats:p\u003EExperimental Design: We evaluated 49 bladder cancer specimens for LRAT protein expression using immunohistochemistry with affinity-purified antibodies to human LRAT. LRAT mRNA expression was assessed using reverse transcription-PCR in bladder specimens from an additional 16 patients. We examined the effect of retinoic acid and ROL on LRAT mRNA expression in five human bladder cancer cell lines.\u003C/jats:p\u003E\n               \u003Cjats:p\u003EResults: LRAT protein was detected throughout the nonneoplastic bladder epithelium in all of the specimens. In bladder tumors, LRAT protein expression was reduced compared with the nonneoplastic epithelium or was completely absent in 7 of 32 (21.9%) superficial tumors versus 16 of 17 (94.1%) invasive tumors (P &amp;lt; 0.001). All of the non-neoplastic bladder specimens tested (11 of 11) showed LRAT mRNA expression, compared with 5 of 8 (62%) superficial tumors and 0 of 5 (0%) invasive tumors (P = 0.001). Three of five human bladder cancer cell lines expressed LRAT mRNA independent of retinoid exposure, whereas in two cell lines LRAT mRNA expression was induced by retinoid treatment.\u003C/jats:p\u003E\n               \u003Cjats:p\u003EConclusions: We report a significant reduction in LRAT expression in bladder cancer. Moreover, we demonstrate an inverse correlation of LRAT mRNA and protein expression with increasing tumor stage. These data suggest that loss of LRAT expression is associated with invasive bladder cancer.\u003C/jats:p\u003E",
+    "DOI": "10.1158/1078-0432.ccr-03-0756",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [2005, 9, 21]
+      ],
+      "date-time": "2005-09-21T23:56:11Z",
+      "timestamp": 1127346971000
+    },
+    "page": "3429-3437",
+    "update-policy": "http://dx.doi.org/10.1158/crossmark_policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 27,
+    "title": [
+      "Reduced Lecithin"
+    ],
+    "prefix": "10.1158",
+    "volume": "10",
+    "author": [
+      {
+        "given": "Stephen",
+        "family": "Boorjian",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "1Urology, Departments of"
+          }
+        ]
+      },
+      {
+        "given": "Satish K.",
+        "family": "Tickoo",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "2Pathology, and"
+          }
+        ]
+      },
+      {
+        "given": "Nigel P.",
+        "family": "Mongan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "3Pharmacology and the"
+          }
+        ]
+      },
+      {
+        "given": "Huayin",
+        "family": "Yu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "1Urology, Departments of"
+          }
+        ]
+      },
+      {
+        "given": "Dean",
+        "family": "Bok",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "5Department of Neurobiology and Brain Research Institute, Jules Stein Eye Institute, University of California at Los Angeles, Los Angeles, California; and"
+          }
+        ]
+      },
+      {
+        "given": "Robert R.",
+        "family": "Rando",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "6Department of Biological Chemistry and Molecular Pharmacology, Harvard Medical School, Boston, Massachusetts"
+          }
+        ]
+      },
+      {
+        "given": "David M.",
+        "family": "Nanus",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "4Division of Hematology and Medical Oncology, New York Presbyterian Hospital-Weill-Cornell Medical Center, New York, New York;"
+          }
+        ]
+      },
+      {
+        "given": "Douglas S.",
+        "family": "Scherr",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "1Urology, Departments of"
+          }
+        ]
+      },
+      {
+        "given": "Lorraine J.",
+        "family": "Gudas",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "3Pharmacology and the"
+          }
+        ]
+      }
+    ],
+    "member": "1086",
+    "published-online": {
+      "date-parts": [
+        [2004, 5, 24]
+      ]
+    },
+    "reference": [
+      {
+        "key": "2022061103304969500_B1",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Jemal A, Murray T, Samuels A, Ghafoor A, Ward E, Thun MJ. Cancer statistics, 2003. CA Cancer J Clin, 53: 5-26,  2003.",
+        "DOI": "10.3322/canjclin.53.1.5"
+      },
+      {
+        "key": "2022061103304969500_B2",
+        "unstructured": "Messing EM. Urothelial tumors of the urinary tract   Walsh PC Retik AB Vaughan ED Wein AJ eds. . Campbell’s Urology, Vol. 4: p. 2732-84,   WB Saunders Philadelphia    2002."
+      },
+      {
+        "key": "2022061103304969500_B3",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Sabichi AL, Lerner SP, Grossman HB, Lippman SM. Retinoids in the chemoprevention of bladder cancer. Curr Opin Oncol, 10: 479-84,  1998.",
+        "DOI": "10.1097/00001622-199809000-00019"
+      },
+      {
+        "key": "2022061103304969500_B4",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Mahmoud LA, Robinson WA. Vitamin A levels in human bladder cancer. Int J Cancer, 30: 143-5,  1982.",
+        "DOI": "10.1002/ijc.2910300203"
+      },
+      {
+        "key": "2022061103304969500_B5",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Sporn MB, Squire RA, Brown CC, Smith JM, Wenk ML, Springer S. 13-cis-retinoic acid: inhibition of bladder carcinogenesis in the rat. Science, 195: 487-9,  1977.",
+        "DOI": "10.1126/science.835006"
+      },
+      {
+        "key": "2022061103304969500_B6",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Mathews-Roth MM, Lausen N, Drouin G, Richter A, Krinsky NI. Effects of carotenoid administration on bladder cancer prevention. Oncology, 48: 177-9,  1991.",
+        "DOI": "10.1159/000226922"
+      },
+      {
+        "key": "2022061103304969500_B7",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Moon RC, Detrisac CJ, Thomas CF, Kelloff GJ. Chemoprevention of experimental bladder cancer. J Cell Biochem Suppl, 16I: 134-8,  1992.",
+        "DOI": "10.1002/jcb.240501326"
+      },
+      {
+        "key": "2022061103304969500_B8",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Laaksovirta S, Rajala P, Nurmi M, Tammela TL, Laato M. The cytostatic effect of 9-cis-retinoic acid, tretinoin, and isotretinoin on three different human bladder cancer cell lines in vitro. Urol Res, 27: 17-22,  1999.",
+        "DOI": "10.1007/s002400050084"
+      },
+      {
+        "key": "2022061103304969500_B9",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Hurst RE, Waliszewski P, Waliszewski M, et al Complexity, retinoid-responsive gene networks and bladder carcinogenesis. Adv Exp Med Biol, 462: 449-67,  1999.",
+        "DOI": "10.1007/978-1-4615-4737-2_35"
+      },
+      {
+        "key": "2022061103304969500_B10",
+        "unstructured": "Clifford JL, Sabichi AL, Zou C, et al Effects of novel phenylretinamides on cell growth and apoptosis in bladder cancer. Cancer Epidemiol Biomark Prev, 10: 391-5,  2001."
+      },
+      {
+        "key": "2022061103304969500_B11",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Prout GR, Jr, Barton BA. 13-cis-retinoic acid in chemoprevention of superficial bladder cancer The National Bladder Cancer Group. J Cell Biochem Suppl, 16I: 148-52,  1992.",
+        "DOI": "10.1002/jcb.240501328"
+      },
+      {
+        "key": "2022061103304969500_B12",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Pedersen H, Wolf H, Jensen SK, et al Administration of a retinoid as prophylaxis of recurrent non-invasive bladder tumors. Scand J Urol Nephrol, 18: 121-3,  1984.",
+        "DOI": "10.3109/00365598409182178"
+      },
+      {
+        "key": "2022061103304969500_B13",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Alfthan O, Tarkkanen J, Grohn P, Heinonen E, Pyrhonen S, Saila K. Tigason (etretinate) in prevention of recurrence of superficial bladder tumors. A double-blind clinical trial. Eur Urol, 9: 6-9,  1983.",
+        "DOI": "10.1159/000474033"
+      },
+      {
+        "key": "2022061103304969500_B14",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Studer UE, Jenzer S, Biedermann C, et al Adjuvant treatment with a vitamin A analogue (etretinate) after transurethral resection of superficial bladder tumors. Final analysis of a prospective, randomized multicenter trial in Switzerland. Eur Urol, 28: 284-90,  1995.",
+        "DOI": "10.1159/000475068"
+      },
+      {
+        "key": "2022061103304969500_B15",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Decensi A, Bruno S, Giaretti W, et al Activity of 4-HPR in superficial bladder cancer using DNA flow cytometry as an intermediate endpoint. J Cell Biochem Suppl, 16I: 139-47,  1992.",
+        "DOI": "10.1002/jcb.240501327"
+      },
+      {
+        "key": "2022061103304969500_B16",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Decensi A, Bruno S, Costantini M, et al Phase IIa study of fenretinide in superficial bladder cancer, using DNA flow cytometry as an intermediate end point. J Natl Cancer Inst, 86: 138-40,  1994.",
+        "DOI": "10.1093/jnci/86.2.138"
+      },
+      {
+        "key": "2022061103304969500_B17",
+        "unstructured": "Mangelsdorf D, Umesono K, Evans RM. The retinoid receptors. The Retinoids: Biology, Chemistry, and Medicine,  2nd ed. 319-50,  1994."
+      },
+      {
+        "key": "2022061103304969500_B18",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Waliszewski P, Waliszewska M, Gordon N, et al Retinoid signaling in immortalized and carcinoma-derived human uroepithelial cells. Mol Cell Endocrinol, 148: 55-65,  1999.",
+        "DOI": "10.1016/S0303-7207(98)00235-4"
+      },
+      {
+        "key": "2022061103304969500_B19",
+        "unstructured": "Gudas LJ, Sporn MB, Roberts AB. Cellular Biology and Biochemistry of the retinoids   Sporn MB Roberts AB Goodman DS eds. . The Retinoids: Biology, Chemistry, and Medicine,  Ed. 2 p. 443-518,   Raven Press New York    1994."
+      },
+      {
+        "key": "2022061103304969500_B20",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Vogel S, Gamble MV, Blaner WS. Biosynthesis, absorption, metabolism and transport of retinoids   Nau H Blaner WS eds. . Retinoids: Biochemical and Molecular Basis of Retinoid Action,  Ed. 2 p. 31-95,   Springer Berlin    1999.",
+        "DOI": "10.1007/978-3-642-58483-1_2"
+      },
+      {
+        "key": "2022061103304969500_B21",
+        "unstructured": "Blaner WS, Olson JA. Retinol and retinoic acid metabolism   Sporn MB Roberts AB Goodman DS eds. . The Retinoids: Biology, Chemistry, and Medicine,  Ed. 2 p. 229-56,   Raven Press New York    1994."
+      },
+      {
+        "key": "2022061103304969500_B22",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Ruiz A, Winston A, Lim YH, Gilbert BA, Rando RR, Bok D. Molecular and biochemical characterization of lecithin retinol acyltransferase. J Biol Chem, 274: 3834-41,  1999.",
+        "DOI": "10.1074/jbc.274.6.3834"
+      },
+      {
+        "key": "2022061103304969500_B23",
+        "unstructured": "Ruiz A, Kuehn MH, Andorf JL, Stone E, Hageman GS, Bok D. Genomic organization and mutation analysis of the gene encoding lecithin retinol acyltransferase in human retinal pigment epithelium. Invest Ophthalmol Vis Sci, 42: 31-7,  2001."
+      },
+      {
+        "key": "2022061103304969500_B24",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Ross AC. Retinoid production and catabolism: role of diet in regulating retinol esterification and retinoic Acid oxidation. J Nutr, 133: 291S-6S,  2003.",
+        "DOI": "10.1093/jn/133.1.291S"
+      },
+      {
+        "key": "2022061103304969500_B25",
+        "unstructured": "Guo X, Knudsen BS, Peehl DM, et al Retinol metabolism and lecithin: retinol acyltransferase levels are reduced in cultured human prostate cancer cells and tissue specimens. Cancer Res, 62: 1654-61,  2002."
+      },
+      {
+        "key": "2022061103304969500_B26",
+        "unstructured": "Guo X, Nanus DM, Ruiz A, Rando RR, Bok D, Gudas LJ. Reduced levels of retinyl esters and vitamin A in human renal cancers. Cancer Res, 61: 2774-81,  2001."
+      },
+      {
+        "key": "2022061103304969500_B27",
+        "unstructured": "Chen AC, Guo X, Derguini F, Gudas LJ. Human breast cancer cells and normal mammary epithelial cells: retinol metabolism and growth inhibition by the retinol metabolite 4-oxoretinol. Cancer Res, 57: 4642-51,  1997."
+      },
+      {
+        "key": "2022061103304969500_B28",
+        "unstructured": "Guo X, Gudas LJ. Metabolism of all-trans-retinol in normal human cell strains and squamous cell carcinoma (SCC) lines from the oral cavity and skin: reduced esterification of retinol in SCC lines. Cancer Res, 58: 166-76,  1998."
+      },
+      {
+        "key": "2022061103304969500_B29",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Guo X, Ruiz A, Rando RR, Bok D, Gudas LJ. Esterification of all-trans-retinol in normal human epithelial cell strains and carcinoma lines from oral cavity, skin and breast: reduced expression of lecithin:retinol acyltransferase in carcinoma lines. Carcinogenesis, 21: 1925-33,  2000.",
+        "DOI": "10.1093/carcin/21.11.1925"
+      },
+      {
+        "key": "2022061103304969500_B30",
+        "unstructured": "Zhan HC, Gudas LJ, Bok D, Rando R, Nanus DM, Tickoo SK. Differential expression of the enzyme that esterifies retinol, lecithin: retinol acyltransferase, in subtypes of human renal cancer and normal kidney. Clin Cancer Res, 9: 4897-905,  2003."
+      },
+      {
+        "key": "2022061103304969500_B31",
+        "unstructured": "Masters JR, Hepburn PJ, Walker L, et al Tissue culture model of transitional cell carcinoma: characterization of twenty-two human urothelial cell lines. Cancer Res, 46: 3630-6,  1986."
+      },
+      {
+        "key": "2022061103304969500_B32",
+        "unstructured": "Fogh J. Cultivation, characterization, and identification of human tumor cells with emphasis on kidney, testis, and bladder tumors. Natl Cancer Inst Monogr, : 5-9,  1978."
+      },
+      {
+        "key": "2022061103304969500_B33",
+        "unstructured": "Sobin LH, Wittekind C. . TNM-UICC Classification of Malignant Tumors, p. 187-90,   Wiley-Liss New York   1997."
+      },
+      {
+        "key": "2022061103304969500_B34",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Epstein JI, Amin MB, Reuter VR, Mostofi FK. The World Health Organization/International Society of Urological Pathology consensus classification of urothelial (transitional cell) neoplasms of the urinary bladder. Bladder Consensus Conference Committee. Am J Surg Pathol, 22: 1435-48,  1998.",
+        "DOI": "10.1097/00000478-199812000-00001"
+      },
+      {
+        "key": "2022061103304969500_B35",
+        "unstructured": "Pemrick SM, Lucas DA, Grippo JF. The retinoid receptors. Leukemia, 8: 1797-806,  1994."
+      },
+      {
+        "key": "2022061103304969500_B36",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Aranda A, Pascual A. Nuclear hormone receptors and gene expression. Physiol Rev, 81: 1269-304,  2001.",
+        "DOI": "10.1152/physrev.2001.81.3.1269"
+      },
+      {
+        "key": "2022061103304969500_B37",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Nagpal S, Chandraratna RA. Recent developments in receptor-selective retinoids. Curr Pharm Des, 6: 919-31,  2000.",
+        "DOI": "10.2174/1381612003400146"
+      },
+      {
+        "key": "2022061103304969500_B38",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Lee KC, Kraus WL. Nuclear receptors, coactivators and chromatin: new approaches, new insights. Trends Endocrinol Metab, 12: 191-7,  2001.",
+        "DOI": "10.1016/S1043-2760(01)00392-7"
+      },
+      {
+        "key": "2022061103304969500_B39",
+        "unstructured": "Cairns P, Sidransky D. Bladder Cancer (Chapter 44)   Vogelstein B Kinzler K eds. . The Genetic Basis of Human Cancer,  Ed. 2 p. 697-702,   McGraw-Hill Inc. New York    2002."
+      },
+      {
+        "key": "2022061103304969500_B40",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Kausch I, Bohle A. Molecular aspects of bladder cancer III. Prognostic markers of bladder cancer. Eur Urol, 41: 15-29,  2002.",
+        "DOI": "10.1016/S0302-2838(01)00007-0"
+      },
+      {
+        "key": "2022061103304969500_B41",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Orntoft TF, Wolf H. Molecular alterations in bladder cancer. Urol Res, 26: 223-33,  1998.",
+        "DOI": "10.1007/s002400050050"
+      },
+      {
+        "key": "2022061103304969500_B42",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Brandau S, Bohle A. Bladder cancer. I. Molecular and genetic basis of carcinogenesis. Eur Urol, 39: 491-7,  2001.",
+        "DOI": "10.1159/000052494"
+      },
+      {
+        "key": "2022061103304969500_B43",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Nguyen PL, Swanson PE, Jaszcz W, et al Expression of epidermal growth factor receptor in invasive transitional cell carcinoma of the urinary bladder. A multivariate survival analysis. Am J Clin Pathol, 101: 166-76,  1994.",
+        "DOI": "10.1093/ajcp/101.2.166"
+      },
+      {
+        "key": "2022061103304969500_B44",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Liukkonen T, Rajala P, Raitanen M, Rintala E, Kaasinen E, Lipponen P. Prognostic value of MIB-1 score, p53, EGFr, mitotic index and papillary status in primary superficial (Stage pTa/T1) bladder cancer: a prospective comparative study. The Finnbladder Group Eur Urol, 36: 393-400,  1999.",
+        "DOI": "10.1159/000020039"
+      },
+      {
+        "key": "2022061103304969500_B45",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Cheng HL, Trink B, Tzai TS, et al Overexpression of c-met as a prognostic indicator for transitional cell carcinoma of the urinary bladder: a comparison with p53 nuclear accumulation. J Clin Oncol, 20: 1544-50,  2002.",
+        "DOI": "10.1200/JCO.2002.20.6.1544"
+      },
+      {
+        "key": "2022061103304969500_B46",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Gohji K, Nomi M, Niitani Y, et al Independent prognostic value of serum hepatocyte growth factor in bladder cancer. J Clin Oncol, 18: 2963-71,  2000.",
+        "DOI": "10.1200/JCO.2000.18.16.2963"
+      },
+      {
+        "key": "2022061103304969500_B47",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Fontana D, Bellina M, Scoffone C, et al Evaluation of c-ras oncogene product (p21) in superficial bladder cancer. Eur Urol, 29: 470-6,  1996.",
+        "DOI": "10.1159/000473799"
+      },
+      {
+        "key": "2022061103304969500_B48",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Theodorescu D, Cornil I, Fernandez BJ, Kerbel RS. Overexpression of normal and mutated forms of HRAS induces orthotopic bladder invasion in a human transitional cell carcinoma. Proc Natl Acad Sci USA, 87: 9047-51,  1990.",
+        "DOI": "10.1073/pnas.87.22.9047"
+      },
+      {
+        "key": "2022061103304969500_B49",
+        "unstructured": "Theodorescu D, Cornil I, Sheehan C, Man MS, Kerbel RS. Ha-ras induction of the invasive phenotype results in up-regulation of epidermal growth factor receptors and altered responsiveness to epidermal growth factor in human papillary transitional cell carcinoma cells. Cancer Res, 51: 4486-91,  1991."
+      },
+      {
+        "key": "2022061103304969500_B50",
+        "unstructured": "Maruyama R, Toyooka S, Toyooka KO, et al Aberrant promoter methylation profile of bladder cancer and its relationship to clinicopathological features. Cancer Res, 61: 8659-63,  2001."
+      },
+      {
+        "key": "2022061103304969500_B51",
+        "unstructured": "Lee MG, Kim HY, Byun DS, et al Frequent epigenetic inactivation of RASSF1A in human bladder carcinoma. Cancer Res, 61: 6688-92,  2001."
+      },
+      {
+        "key": "2022061103304969500_B52",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Nutting CM, Huddart RA. Retinoids in the prevention of bladder cancer. Expert Rev Anticancer Ther, 1: 541-5,  2001.",
+        "DOI": "10.1586/14737140.1.4.541"
+      },
+      {
+        "key": "2022061103304969500_B53",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Nutting C, Huddart RA. Rethinking the secondary prevention of superficial bladder cancer: is there a role for retinoids?. BJU Int, 85: 1023-6,  2000.",
+        "DOI": "10.1046/j.1464-410x.2000.00655.x"
+      },
+      {
+        "key": "2022061103304969500_B54",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Zou C, Wang L, Liebert M, Grossman HB, Lotan R, Wei Q. Combined effect of chemopreventive agent N-(4-hydroxyphenyl) retinamide (4-HPR) and gamma-radiation on bladder cancer cell lines. Int J Oncol, 13: 1037-41,  1998.",
+        "DOI": "10.3892/ijo.13.5.1037"
+      },
+      {
+        "key": "2022061103304969500_B55",
+        "unstructured": "Moon RC, McCormick DL, Mehta RG. Inhibition of carcinogenesis by retinoids. Cancer res, 43: 2469s-75s,  1983."
+      },
+      {
+        "key": "2022061103304969500_B56",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Mettlin C, Graham S. Dietary risk factors in human bladder cancer. Am J Epidemiol, 110: 255-63,  1979.",
+        "DOI": "10.1093/oxfordjournals.aje.a112810"
+      },
+      {
+        "key": "2022061103304969500_B57",
+        "doi-asserted-by": "crossref",
+        "unstructured": "Peto R, Doll R, Buckley JD, Sporn MB. Can dietary beta-carotene materially reduce human cancer rates?. Nature, 290: 201-8,  1981.",
+        "DOI": "10.1038/290201a0"
+      }
+    ],
+    "container-title": [
+      "Clinical Cancer Research"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://aacrjournals.org/clincancerres/article-pdf/10/10/3429/1950960/zdf01004003429.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "syndication"
+      },
+      {
+        "URL": "https://aacrjournals.org/clincancerres/article-pdf/10/10/3429/1950960/zdf01004003429.pdf",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [2022, 6, 11]
+      ],
+      "date-time": "2022-06-11T17:17:22Z",
+      "timestamp": 1654967842000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://aacrjournals.org/clincancerres/article/10/10/3429/181821/Reduced-LecithinRetinol-Acyltransferase-Expression"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [2004, 5, 15]
+      ]
+    },
+    "references-count": 57,
+    "journal-issue": {
+      "issue": "10",
+      "published-online": {
+        "date-parts": [
+          [2004, 5, 24]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [2004, 5, 15]
+        ]
+      }
+    },
+    "URL": "https://doi.org/10.1158/1078-0432.ccr-03-0756",
+    "relation": {
+
+    },
+    "ISSN": [
+      "1078-0432",
+      "1557-3265"
+    ],
+    "issn-type": [
+      {
+        "value": "1078-0432",
+        "type": "print"
+      },
+      {
+        "value": "1557-3265",
+        "type": "electronic"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [2004, 5, 15]
+      ]
+    }
+  }
+}

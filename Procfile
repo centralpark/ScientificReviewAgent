@@ -1,1 +1,1 @@
-web: python3 process_aacr_dois.py
+web: python3 wrap_to_vertex_jsonl.py
