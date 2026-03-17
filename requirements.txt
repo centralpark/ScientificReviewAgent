@@ -3,3 +3,9 @@ google-cloud-discoveryengine>=0.11.0
 requests>=2.31.0
 google-cloud-pubsub>=2.0.0
 pandas>=1.0.0
+
+# For literature_agent.py (LangGraph + Google integrations)
+langchain-core>=0.3.0
+langgraph>=0.2.0
+langchain-google-community>=0.1.0
+langchain-google-genai>=2.0.0
