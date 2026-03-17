@@ -44,4 +44,3 @@ def retrieve_aacr_abstracts(search_query: str, top_k: int = 10) -> list:
     return retrieved_docs
 
 
-doc = retrieve_aacr_abstracts("pre-cancerous lesion", top_k=5)
