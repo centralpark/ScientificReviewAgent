@@ -1,33 +1,96 @@
 import os
-from typing import Annotated, TypedDict
+import re
+from typing import List
 
 # LangChain / Google Cloud imports
-from langchain_google_community import VertexAISearchRetriever
 from langchain_core.tools.retriever import create_retriever_tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
+from langchain_core.documents import Document
+from langchain_core.retrievers import BaseRetriever
+from google.cloud import discoveryengine_v1 as discoveryengine
 
 # LangGraph imports
 from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 
+
+def _strip_jats(text: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+class VertexSearchRestRetriever(BaseRetriever):
+    """Vertex AI Search retriever using REST transport (no gRPC)."""
+
+    project_id: str
+    location_id: str
+    data_store_id: str
+    max_documents: int = 10
+
+    def __init__(
+        self,
+        project_id: str,
+        location_id: str,
+        data_store_id: str,
+        max_documents: int = 10,
+        **kwargs,
+    ):
+        super().__init__(
+            project_id=project_id,
+            location_id=location_id,
+            data_store_id=data_store_id,
+            max_documents=max_documents,
+            **kwargs,
+        )
+        self._client = discoveryengine.SearchServiceClient(transport="rest")
+        self._serving_config = (
+            f"projects/{project_id}/locations/{location_id}/collections/default_collection/"
+            f"dataStores/{data_store_id}/servingConfigs/default_config"
+        )
+
+    def _get_relevant_documents(self, query: str, *, run_manager=None) -> List[Document]:
+        request = discoveryengine.SearchRequest(
+            serving_config=self._serving_config,
+            query=query,
+            page_size=self.max_documents,
+            content_search_spec=discoveryengine.SearchRequest.ContentSearchSpec(
+            # Enable Snippets to get the exact matching sentences
+            snippet_spec=discoveryengine.SearchRequest.ContentSearchSpec.SnippetSpec(
+                return_snippet=True
+            ),
+            # Extract the actual structured data we mapped earlier
+            extractive_content_spec=discoveryengine.SearchRequest.ContentSearchSpec.ExtractiveContentSpec(
+                max_extractive_answer_count=1
+            )
+        )
+        )
+        resp = self._client.search(request=request)
+        docs: List[Document] = []
+        for result in resp.results:
+            doc_dict = type(result.document).to_dict(result.document)
+            struct = (doc_dict or {}).get("struct_data") or doc_dict
+            abstract = struct.get("abstract", "")
+            page_content = _strip_jats(abstract) if abstract else struct.get("title", "")
+            docs.append(Document(page_content=page_content or "", metadata=dict(struct)))
+        return docs
+
+
 # -------------------------------------------------------------------
-# 1. Setup the Retriever for Vertex AI Data Store
+# 1. Setup the Retriever for Vertex AI Data Store (REST, no gRPC)
 # -------------------------------------------------------------------
 PROJECT_ID = os.environ.get("PROJECT_ID", "llm-app-488813")
 LOCATION = "global"
 DATA_STORE_ID = os.environ.get("DATA_STORE_ID", "aacr-abstracts_1773385412104")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyCE0kuDV_t2ZuASgFqFPaw7MsuZh9E0DMo")
 
-# Initialize the Vertex AI Search Retriever
-retriever = VertexAISearchRetriever(
+retriever = VertexSearchRestRetriever(
     project_id=PROJECT_ID,
     location_id=LOCATION,
     data_store_id=DATA_STORE_ID,
-    max_documents=10, # Number of chunks to retrieve
-    beta=True,
-    engine_data_type=2, # 1 for unstructured, 2 for structured, 3 for website
+    max_documents=10,
 )
+
 
 # -------------------------------------------------------------------
 # 2. Create the RAG Tool
@@ -92,6 +155,7 @@ app = workflow.compile()
 # -------------------------------------------------------------------
 
 user_query = "Summarize the studies that focus on pre-cancerous lesion."
+retriever.invoke(user_query)
 
 # Initialize the state with the user's message
 inputs = {"messages": [HumanMessage(content=user_query)]}
