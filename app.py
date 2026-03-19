@@ -1,22 +1,35 @@
+import os
+import json
+
 import streamlit as st
 from langchain_core.messages import HumanMessage, AIMessage
+from dotenv import load_dotenv
+
+# Load local environment variables from .env before importing the agent.
+load_dotenv(override=False)
 
 # Import your compiled LangGraph workflow
 from literature_agent import app as agent_app 
 
-st.set_page_config(page_title="AACR Research Agent", page_icon="🧬")
-st.title("AACR Research Assistant")
+st.set_page_config(page_title="Pharmaceutical Research Assistant", page_icon="🧬")
+st.title("Pharmaceutical Research Assistant")
 
 # --- NEW HELPER FUNCTION ---
 def extract_text(message) -> str:
     """Robustly extracts text from LangChain messages, handling Gemini's list format."""
     if isinstance(message.content, list):
         # Extract and join only the blocks that are type "text"
-        return "".join(
+        text = "".join(
             block["text"] for block in message.content 
             if isinstance(block, dict) and block.get("type") == "text"
         )
-    return str(message.content)
+    else:
+        text = str(message.content)
+
+    text = text.replace("\\n", "\n")
+    text = text.replace("\n", "  \n")
+    
+    return text
 # ---------------------------
 
 if "messages" not in st.session_state:
@@ -39,7 +52,7 @@ if prompt := st.chat_input("Ask about cancer research..."):
 
     # Call the LangGraph agent
     with st.chat_message("assistant"):
-        with st.spinner("Searching AACR database..."):
+        with st.spinner("Thinking..."):
             inputs = {"messages": st.session_state.messages}
             
             # Execute the graph

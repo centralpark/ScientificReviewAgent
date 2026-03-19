@@ -4,6 +4,7 @@ import datetime as _dt
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
+from dotenv import load_dotenv
 
 # LangChain / Google Cloud imports
 from langchain_core.tools.retriever import create_retriever_tool
@@ -22,10 +23,28 @@ from langgraph.prebuilt import ToolNode, tools_condition
 # -------------------------------------------------------------------
 # 1. Setup the Retriever for Vertex AI Data Store (REST, no gRPC)
 # -------------------------------------------------------------------
-PROJECT_ID = os.environ.get("PROJECT_ID", "llm-app-488813")
+load_dotenv(override=False)
+
+PROJECT_ID = os.environ.get("PROJECT_ID")
 LOCATION = "global"
-DATA_STORE_ID = os.environ.get("DATA_STORE_ID", "aacr-abstracts_1773385412104")
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "AIzaSyCE0kuDV_t2ZuASgFqFPaw7MsuZh9E0DMo")
+DATA_STORE_ID = os.environ.get("DATA_STORE_ID")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+
+def _require_runtime_config() -> None:
+    missing = []
+    if not PROJECT_ID:
+        missing.append("PROJECT_ID")
+    if not DATA_STORE_ID:
+        missing.append("DATA_STORE_ID")
+    if not GOOGLE_API_KEY:
+        missing.append("GOOGLE_API_KEY")
+    if missing:
+        raise RuntimeError(
+            "Missing required environment variables: "
+            + ", ".join(missing)
+            + ". Set them before starting the app."
+        )
 
 def _strip_jats(text: str) -> str:
     text = re.sub(r"<[^>]+>", " ", text)
@@ -68,6 +87,10 @@ class AACRSearchInput(BaseModel):
             "issue: ANY(\"Supplement\")"
         )
     )
+    only_annual_meeting: bool = Field(
+        default=False,
+        description="Set to True ONLY if the user specifically requests information from annual meetings"
+    )
 
 
 class VertexSearchRestRetriever(BaseRetriever):
@@ -76,7 +99,7 @@ class VertexSearchRestRetriever(BaseRetriever):
     project_id: str
     location_id: str
     data_store_id: str
-    max_documents: int = 10
+    max_documents: int = 50
     filter: Optional[str] = None
 
     def __init__(
@@ -84,7 +107,7 @@ class VertexSearchRestRetriever(BaseRetriever):
         project_id: str,
         location_id: str,
         data_store_id: str,
-        max_documents: int = 10,
+        max_documents: int = 50,
         **kwargs,
     ):
         super().__init__(
@@ -123,12 +146,14 @@ class VertexSearchRestRetriever(BaseRetriever):
 
 
 @tool("search_aacr_abstracts", args_schema=AACRSearchInput)
-def search_aacr_abstracts(query: str, filter_expr: Optional[str] = None) -> str:
+def search_aacr_abstracts(query: str, filter_expr: Optional[str] = None, only_annual_meeting: bool = False) -> str:
     """
     Searches and retrieves publication abstracts from the American Association for Cancer Research (AACR). Use this tool to find scientific studies, clinical trial summaries, and research findings related to oncology, tumor biology, and cancer treatments. Input should be a specific search query containing medical terms, cancer types (e.g., NSCLC, breast cancer), gene names (e.g., BRCA1, KRAS), or specific therapies.
     """
     
-    # We instantiate the retriever INSIDE the tool. 
+    _require_runtime_config()
+
+    # We instantiate the retriever INSIDE the tool.
     # This is highly recommended for thread-safety in LangGraph so concurrent 
     # user requests don't overwrite each other's filter states.
     retriever = VertexSearchRestRetriever(
@@ -162,6 +187,14 @@ def search_aacr_abstracts(query: str, filter_expr: Optional[str] = None) -> str:
         doi = struct.get("DOI", "") or struct.get("doi", "")
         raw_abstract = struct.get('abstract', '')
         abstract = _strip_jats(raw_abstract) if raw_abstract else title
+        # --- THE PYTHON FILTERING LOGIC ---
+        if only_annual_meeting:
+            # Check if it's actually an annual meeting paper
+            is_am = "annual meeting" in abstract.lower() or ".am" in doi.lower()
+            
+            # If the LLM set the flag, and it's not an AM paper, skip it!
+            if not is_am:
+                continue
         ref = url or (f"https://doi.org/{doi}" if doi else "")
 
         result_str = (
@@ -179,6 +212,7 @@ tools = [search_aacr_abstracts, compute_date]
 
 def build_agent_app():
     """Build and compile the LangGraph agent (import-safe)."""
+    _require_runtime_config()
     llm = ChatGoogleGenerativeAI(
         model="gemini-3.1-pro-preview",
         temperature=1.0,
@@ -242,7 +276,7 @@ app = build_agent_app()
 
 if __name__ == "__main__":
 
-    user_query = "Summarize the studies that focus on pre-cancerous lesion, published in the last 3 years."
+    user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
 
     # Initialize the state with the user's message
     inputs = {"messages": [HumanMessage(content=user_query)]}
