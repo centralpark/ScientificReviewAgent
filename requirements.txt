@@ -9,3 +9,6 @@ langchain-core>=0.3.0
 langgraph>=0.2.0
 langchain-google-community>=0.1.0
 langchain-google-genai>=2.0.0
+
+# For app.py (Streamlit UI)
+streamlit>=1.30.0
