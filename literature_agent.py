@@ -15,6 +15,8 @@ from langchain_core.messages import SystemMessage
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
 from google.cloud import discoveryengine_v1 as discoveryengine
+from langchain_community.tools.pubmed.tool import PubmedQueryRun
+from langchain_community.utilities.pubmed import PubMedAPIWrapper
 
 # LangGraph imports
 from langgraph.graph import StateGraph, START, END, MessagesState
@@ -208,7 +210,16 @@ def search_aacr_abstracts(query: str, filter_expr: Optional[str] = None, only_an
         
     return "## Sources\n\n" + "\n\n".join(formatted_results)
 
-tools = [search_aacr_abstracts, compute_date]
+# Initialize the PubMed tool
+search_pubmed = PubmedQueryRun(api_wrapper=PubMedAPIWrapper(top_k_results=10))
+search_pubmed.name = "search_pubmed"
+search_pubmed.description = (
+    "Searches the global PubMed database for biomedical and pharmaceutical literature. "
+    "Use this tool to find general scientific consensus, clinical trial results, or "
+    "peer-reviewed papers. Input should be a specific search query."
+)
+
+tools = [search_aacr_abstracts, compute_date, search_pubmed]
 
 def build_agent_app():
     """Build and compile the LangGraph agent (import-safe)."""
@@ -276,7 +287,9 @@ app = build_agent_app()
 
 if __name__ == "__main__":
 
-    user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
+    # user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
+
+    user_query = "What is the most recent study on the treatment of pre-cancerous lesions?"
 
     # Initialize the state with the user's message
     inputs = {"messages": [HumanMessage(content=user_query)]}
