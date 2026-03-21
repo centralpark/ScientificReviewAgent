@@ -3,6 +3,7 @@ import re
 import datetime as _dt
 from typing import List, Optional
 
+import requests
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
@@ -31,7 +32,7 @@ PROJECT_ID = os.environ.get("PROJECT_ID")
 LOCATION = "global"
 DATA_STORE_ID = os.environ.get("DATA_STORE_ID")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
 def _require_runtime_config() -> None:
     missing = []
@@ -73,6 +74,48 @@ def compute_date(years: int, months: int = 0, days: int = 0) -> str:
         days: Optional, number of days to subtract from today's date
     """
     return _years_ago_iso(years, months, days)
+
+
+@tool("tavily_web_search")
+def tavily_web_search(query: str, max_results: int = 10) -> str:
+    """Search the live web using Tavily for up-to-date information, scientific news, and general facts.
+
+    Args:
+        query: The search query
+        max_results: The maximum number of results to return
+    """
+    api_key = TAVILY_API_KEY
+    if not api_key:
+        return "Tavily search is not configured. Please set the environment variable TAVILY_API_KEY."
+
+    try:
+        resp = requests.post(
+            "https://api.tavily.com/search",
+            json={
+                "api_key": api_key,
+                "query": query,
+                "max_results": max_results,
+                "search_depth": 'advanced',
+            },
+            timeout=60,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+    except Exception as e:
+        return f"Tavily search failed. Error: {str(e)}"
+
+    results = payload.get("results") or []
+    if not results:
+        return "No web results found matching the query."
+
+    formatted_results = []
+    for i, r in enumerate(results):
+        title = r.get("title", "").strip()
+        url = (r.get("url") or "").strip()
+        content = (r.get("content") or "").strip()
+        formatted_results.append(f"[{i+1}] Title: {title}\nURL: {url}\nContent: {content}")
+
+    return "## Sources\n\n" + "\n\n".join(formatted_results)
 
 
 # Define the Input Schema so the LLM knows how to filter
@@ -211,15 +254,24 @@ def search_aacr_abstracts(query: str, filter_expr: Optional[str] = None, only_an
     return "## Sources\n\n" + "\n\n".join(formatted_results)
 
 # Initialize the PubMed tool
-search_pubmed = PubmedQueryRun(api_wrapper=PubMedAPIWrapper(top_k_results=10))
-search_pubmed.name = "search_pubmed"
-search_pubmed.description = (
-    "Searches the global PubMed database for biomedical and pharmaceutical literature. "
-    "Use this tool to find general scientific consensus, clinical trial results, or "
-    "peer-reviewed papers. Input should be a specific search query."
-)
+# search_pubmed = PubmedQueryRun(api_wrapper=PubMedAPIWrapper(top_k_results=10))
+# search_pubmed.name = "search_pubmed"
+# search_pubmed.description = (
+#     "Searches the global PubMed database for biomedical and pharmaceutical literature. "
+#     "Use this tool to find general scientific consensus, clinical trial results, or "
+#     "peer-reviewed papers. Input should be a specific search query."
+# )
 
-tools = [search_aacr_abstracts, compute_date, search_pubmed]
+
+# def web_search_agent_node(state: MessagesState):
+#     """Handles the Native Google Search Grounding."""
+    
+#     llm_with_google = llm.bind_tools([{"google_search": {}}])
+#     response = llm_with_google.invoke(state["messages"])
+#     return {"messages": [response]}
+
+
+tools = [search_aacr_abstracts, compute_date, tavily_web_search]
 
 def build_agent_app():
     """Build and compile the LangGraph agent (import-safe)."""
@@ -289,7 +341,7 @@ if __name__ == "__main__":
 
     # user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
 
-    user_query = "What is the most recent study on the treatment of pre-cancerous lesions?"
+    user_query = "What are functions of COL17A gene?"
 
     # Initialize the state with the user's message
     inputs = {"messages": [HumanMessage(content=user_query)]}

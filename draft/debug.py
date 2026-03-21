@@ -59,3 +59,38 @@ print(response)  # Movie(title="Inception", year=2010, director="Christopher Nol
 response = model.invoke("Why do parrots have colorful feathers?")
 reasoning_steps = [b for b in response.content_blocks if b["type"] == "reasoning"]
 print(" ".join(step["reasoning"] for step in reasoning_steps))
+
+
+
+from vertexai.generative_models import GenerativeModel, Tool, grounding
+
+# Give Gemini the power of live Google Search
+google_search_tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
+model = GenerativeModel("gemini-1.5-pro-001", tools=[google_search_tool])
+
+
+import os
+from langchain_community.tools.tavily_search import TavilySearchResults
+
+# You need a free API key from tavily.com
+os.environ["TAVILY_API_KEY"] = "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"
+
+# max_results limits how many websites it scrapes
+web_search_tool = TavilySearchResults(max_results=5)
+web_search_tool.name = "general_web_search"
+web_search_tool.description = "Search the web for up-to-date information, scientific news, and general facts."
+
+import os
+from langchain_tavily import TavilySearch
+
+# Ensure your API key is set
+os.environ["TAVILY_API_KEY"] = "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"
+
+# Initialize the new TavilySearch tool
+web_search_tool = TavilySearch(max_results=5)
+
+# (Optional) You can still customize the name and description for your agent
+web_search_tool.name = "general_web_search"
+web_search_tool.description = "Search the web for up-to-date information, scientific news, and general facts."
+
+result = web_search_tool.invoke("COL17A protein")
