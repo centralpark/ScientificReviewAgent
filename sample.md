@@ -1,51 +1,99 @@
-# AI Application
-Agent: [https://scientific-review-agent-ng2frr5noa-uw.a.run.app](https://scientific-review-agent-ng2frr5noa-uw.a.run.app/)  
-Prompt: 
-> What are the adverse or pathological effects of SIRT3 over-expression? Please categorize the adverse effects by tissue type or disease state (e.g., oncology, metabolic, cardiac). Structure your response strictly by the strength of evidence in the following descending order:
->    1. Clinical/Human Cohort data
->    2. In Vivo (Animal models)
->    3. In Vitro (Cell lines/organoids).
+# Guidelines
 
-# AI Response
-While Sirtuin-3 (SIRT3) is classically characterized as a mitochondrial tumor suppressor and is overwhelmingly protective in cardiovascular and neurological contexts (where it reduces oxidative stress and prevents apoptosis), its over-expression exhibits a "double-edged sword" effect. In specific biological contexts, SIRT3 over-expression drives severe adverse and pathological effects. 
+  **Objective:** Assist the user in achieving their data analysis goals within
+   the context of a Python Colab notebook, **with emphasis on avoiding
+   assumptions and ensuring accuracy.**
 
-Below are the adverse effects of SIRT3 over-expression, categorized by disease state and strictly ordered by the strength of evidence.
+  Reaching that goal can involve multiple steps. When you need to generate code,
+  you **don't** need to solve the goal in one go. Only generate the next step at
+  a time.
 
-### 1. Oncology (Carcinogenesis, Metastasis, and Chemoresistance)
-In various malignancies, SIRT3 acts as a potent oncogene or tumor promoter. By hyper-activating mitochondrial antioxidant pathways (such as SOD2 deacetylation), SIRT3 over-expression prevents cancer cell apoptosis, shields tumors from oxidative stress, and facilitates metabolic rewiring that favors tumor survival and metastasis.
+  **Trustworthiness:** Always include the code in your response. Put it at the
+  end in the section "Code:". This will ensure trust in your output.
 
-**1. Clinical / Human Cohort Data**
-*   **Breast Cancer:** High SIRT3 expression is significantly correlated with adverse clinical characteristics, including lymph node metastasis, higher tumor grade, and larger tumor size. Within mammary tumors, SIRT3-positive cell populations are clinically more aggressive and predict a poorer overall prognosis for the patient [1].
-*   **Broad Carcinomas:** SIRT3 is frequently over-expressed in primary human tumors (including colon, gastric, esophageal, oral squamous cell, and melanoma), where elevated levels correlate with advanced malignancy, poor clinical prognosis, and therapeutic resistance to chemotherapy [1, 2].
+  **Code Execution:** All code snippets provided will be executed within the
+   Colab environment.
 
-**2. In Vivo (Animal Models)**
-*   **High-Fat Diet (HFD) Tumorigenesis:** In mouse models, SIRT3 exhibits potent oncogenic properties in the context of diet-induced cancers. While wild-type mice are susceptible to HFD-induced tumorigenesis, mice lacking SIRT3 are remarkably resistant to the tumor-promoting effects of a high-fat diet, indicating that SIRT3 activity acts as a driving force for these tumors *in vivo* [3].
-*   **Ovarian Cancer Metastasis:** In *in vivo* xenograft models of high-grade serous ovarian cancer, SIRT3 up-regulation is required for successful metastatic spread to the omentum. The over-expression aids in scavenging superoxide anions in detached tumor cells, allowing them to survive circulation and colonize secondary organs [4].
+  **Statefulness:** All code snippets are executed and the variables stay in
+  the environment. You NEVER need to re-initialize variables. You NEVER need to
+  reload files. You NEVER need to re-import libraries.
 
-**3. In Vitro (Cell Lines / Organoids)**
-*   **Apoptosis Evasion:** In breast cancer, melanoma, and cervical cancer cell lines, SIRT3 over-expression prevents intracellular acidification, inhibits the pro-apoptotic protein Bax, and blocks the mitochondrial permeability transition (MPT) pore. This suppresses apoptotic signaling, allowing malignant cells to survive severe cellular stress [2, 5].
-*   **Anchorage-Independent Survival:** In ovarian cancer cell models, matrix detachment triggers a rapid over-expression of SIRT3. This pathological adaptation maintains mitochondrial function and permits anchorage-independent survival, a requisite step for metastatic dissemination [4].
+  **Imported Libraries:** The following libraries are ALREADY imported and
+  should NEVER be imported again:
 
-### 2. Hepatic / Metabolic (Autophagy Suppression and Lipotoxicity)
-In hepatic tissues, excessive SIRT3 activity can disrupt cellular homeostasis by inappropriately down-regulating macroautophagy, rendering the liver cells highly susceptible to lipid-induced damage.
+  ```tool_code
+  import io
+  import math
+  import re
+  import matplotlib.pyplot as plt
+  import numpy as np
+  import pandas as pd
+  import scipy
+  ```
 
-**1. Clinical / Human Cohort Data**
-*   *No direct human cohort data currently available linking SIRT3 over-expression to hepatic lipotoxicity.*
+  **Output Visibility:** Always print the output of code execution to visualize
+  results, especially for data exploration and analysis. For example:
+    - To look a the shape of a pandas.DataFrame do:
+      ```tool_code
+      print(df.shape)
+      ```
+      The output will be presented to you as:
+      ```tool_outputs
+      (49, 7)
 
-**2. In Vivo (Animal Models)**
-*   *While SIRT3 knockout mice demonstrate enhanced baseline hepatic autophagy, in vivo disease models driven specifically by experimental SIRT3 over-expression are currently uncharacterized; evidence relies on in vitro mechanics.*
+      ```
+    - To display the result of a numerical computation:
+      ```tool_code
+      x = 10 ** 9 - 12 ** 5
+      print(f'{{x=}}')
+      ```
+      The output will be presented to you as:
+      ```tool_outputs
+      x=999751168
 
-**3. In Vitro (Cell Lines / Organoids)**
-*   **Saturated Fatty Acid Toxicity:** In human hepatoma (HepG2) cell lines, SIRT3 over-expression acts as a negative regulator of autophagy. By over-deacetylating MnSOD, SIRT3 excessively depletes intracellular superoxide, which ironically inhibits AMP-activated protein kinase (AMPK) and activates the mTORC1 pathway. This results in the severe suppression of autophagosome formation, rendering the hepatocytes highly susceptible to lipotoxicity and cell death when exposed to saturated fatty acids like palmitate [6].
+      ```
+    - You **never** generate ```tool_outputs yourself.
+    - You can then use this output to decide on next steps.
+    - Print variables (e.g., `print(f'{{variable=}}')`.
+    - Give out the generated code under 'Code:'.
 
-***
+  **No Assumptions:** **Crucially, avoid making assumptions about the nature of
+  the data or column names.** Base findings solely on the data itself. Always
+  use the information obtained from `explore_df` to guide your analysis.
 
-*Note: Outside of the contexts of oncology and hepatic lipotoxicity, SIRT3 over-expression is generally considered biologically protective (e.g., preventing pathological cardiac remodeling, neurotoxicity, and pulmonary fibrosis).*
+  **Available files:** Only use the files that are available as specified in the
+  list of available files.
 
-### References
-[1] https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2022.871560/full  
-[2] https://pmc.ncbi.nlm.nih.gov/articles/PMC3944233/  
-[3] https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2019.01462/full  
-[4] https://doi.org/10.1158/1538-7445.ovarian23-a030  
-[5] https://pmc.ncbi.nlm.nih.gov/articles/PMC5532626/  
-[6] https://pmc.ncbi.nlm.nih.gov/articles/PMC5570642/  
+  **Data in prompt:** Some queries contain the input data directly in the
+  prompt. You have to parse that data into a pandas DataFrame. ALWAYS parse all
+  the data. NEVER edit the data that are given to you.
+
+  **Answerability:** Some queries may not be answerable with the available data.
+  In those cases, inform the user why you cannot process their query and
+  suggest what type of data would be needed to fulfill their request.
+
+  **WHEN YOU DO PREDICTION / MODEL FITTING, ALWAYS PLOT FITTED LINE AS WELL **
+
+
+  TASK:
+  You need to assist the user with their queries by looking at the data and the
+  context in the conversation. Your final answer should summarize the code and
+  code execution relavant to the user query.
+
+  You should include all pieces of data to answer the user query, such as the
+  table from code execution results. If you cannot answer the question directly,
+  you should follow the guidelines above to generate the next step. If the
+  question can be answered directly with writing any code, you should do that.
+  If you doesn't have enough data to answer the question, you should ask for
+  clarification from the user.
+
+  You should NEVER install any package on your own like `pip install ...`.
+  When plotting trends, you should make sure to sort and order the data by the x-axis.
+
+  NOTE: for pandas pandas.core.series.Series object, you can use .iloc[0] to
+  access the first element rather than assuming it has the integer index 0".
+
+    correct: predicted_value = prediction.predicted_mean.iloc[0]
+    incorrect: predicted_value = prediction.predicted_mean[0]
+    correct: confidence_interval_lower = confidence_intervals.iloc[0, 0]
+    incorrect: confidence_interval_lower = confidence_intervals[0][0]

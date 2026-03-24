@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
 
 # LangChain / Google Cloud imports
@@ -9,7 +11,12 @@ from langchain_core.messages import SystemMessage
 # LangGraph imports
 from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
-from tools import compute_date, search_aacr_abstracts, tavily_web_search
+
+repo_root = Path(__file__).resolve().parents[3]  # research_agent/
+sys.path.insert(0, str(repo_root))
+
+from tools import tavily_web_search
+import research_agent.sub_agents.medical_eval_agent.prompt as prompt
 
 # -------------------------------------------------------------------
 # 1. Setup the Retriever for Vertex AI Data Store (REST, no gRPC)
@@ -18,7 +25,7 @@ load_dotenv(override=False)
 
 PROJECT_ID = os.environ.get("PROJECT_ID")
 DATA_STORE_ID = os.environ.get("DATA_STORE_ID")
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 
 
 def _require_runtime_config() -> None:
@@ -38,7 +45,7 @@ def _require_runtime_config() -> None:
 
 
 
-tools = [search_aacr_abstracts, compute_date, tavily_web_search]
+tools = [tavily_web_search]
 
 
 def build_agent_app():
@@ -57,10 +64,10 @@ def build_agent_app():
     # 4. Define the LangGraph Nodes and State
     # -------------------------------------------------------------------
     # We use the prebuilt MessagesState which holds a list of messages
-    def literature_agent(state: MessagesState):
+    def medical_eval_agent(state: MessagesState):
         """The agent node calls the LLM with the current conversation history."""
-        citation_instructions = SystemMessage(content=prompt.MEDICAL_EVAL_PROMPT)
-        response = llm_with_tools.invoke([citation_instructions, *state["messages"]])
+        medical_eval_instructions = SystemMessage(content=prompt.MEDICAL_EVAL_PROMPT)
+        response = llm_with_tools.invoke([medical_eval_instructions, *state["messages"]])
         # Return the new message to be appended to the state
         return {"messages": [response]}
 
@@ -70,24 +77,25 @@ def build_agent_app():
     workflow = StateGraph(MessagesState)
 
     # Add our reasoning node and the prebuilt ToolNode
-    workflow.add_node("literature_agent", literature_agent)
+    workflow.add_node("medical_eval_agent", medical_eval_agent)
     workflow.add_node("tools", ToolNode(tools))
 
     # Define the flow
-    workflow.add_edge(START, "literature_agent")
+    workflow.add_edge(START, "medical_eval_agent")
 
     # tools_condition checks if the LLM returned tool_calls.
     # If yes -> goes to "tools" node. If no -> goes to END.
-    workflow.add_conditional_edges("literature_agent", tools_condition)
+    workflow.add_conditional_edges("medical_eval_agent", tools_condition)
 
     # After tools are executed, return to the agent to synthesize the answer
-    workflow.add_edge("tools", "literature_agent")
+    workflow.add_edge("tools", "medical_eval_agent")
 
     # Compile into a runnable application
-    return workflow.compile()
+    return workflow.compile(debug=True)
 
 
 app = build_agent_app()
+
 
 # -------------------------------------------------------------------
 # 6. test part
@@ -97,13 +105,16 @@ if __name__ == "__main__":
     # user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
 
     user_query = """
-    What are the adverse or pathological effects of SIRT3 over-expression? Please categorize the adverse effects by tissue type or disease state (e.g., oncology, metabolic, cardiac). Structure your response strictly by the strength of evidence in the following descending order:
-    1. Clinical/Human Cohort data
-    2. In Vivo (Animal models)
-    3. In Vitro (Cell lines/organoids).
+    Evaluate the medical value of SIRT3 for the treatment of Osteoarthritis.
     """
 
     # Initialize the state with the user's message
     inputs = {"messages": [HumanMessage(content=user_query)]}
+
+
+    for event in app.stream(inputs, stream_mode="updates"):
+        for node_name, state_update in event.items():
+            print(f"\n🟢 [DEBUG] Node executed: {node_name}")
+            print(f"🔄 [DEBUG] State updated with: {state_update}")
 
     app.invoke(inputs)
