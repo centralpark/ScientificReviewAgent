@@ -9,10 +9,11 @@ from dotenv import load_dotenv
 load_dotenv(override=False)
 
 # Import your compiled LangGraph workflow
-from literature_agent import app as agent_app 
+from research_agent.agent import app as agent_app
 
 st.set_page_config(page_title="Pharmaceutical Research Assistant", page_icon="🧬")
 st.title("Pharmaceutical Research Assistant")
+
 
 # --- NEW HELPER FUNCTION ---
 def extract_text(message) -> str:
@@ -20,7 +21,8 @@ def extract_text(message) -> str:
     if isinstance(message.content, list):
         # Extract and join only the blocks that are type "text"
         text = "".join(
-            block["text"] for block in message.content 
+            block["text"]
+            for block in message.content
             if isinstance(block, dict) and block.get("type") == "text"
         )
     else:
@@ -28,12 +30,14 @@ def extract_text(message) -> str:
 
     text = text.replace("\\n", "\n")
     text = text.replace("\n", "  \n")
-    
+
     return text
+
+
 # ---------------------------
 
 if "messages" not in st.session_state:
-    st.session_state.messages =[]
+    st.session_state.messages = []
 
 # Display previous chat messages
 for msg in st.session_state.messages:
@@ -46,7 +50,7 @@ for msg in st.session_state.messages:
 if prompt := st.chat_input("Ask about cancer research..."):
     user_message = HumanMessage(content=prompt)
     st.session_state.messages.append(user_message)
-    
+
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -54,16 +58,16 @@ if prompt := st.chat_input("Ask about cancer research..."):
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             inputs = {"messages": st.session_state.messages}
-            
+
             # Execute the graph
             result = agent_app.invoke(inputs)
-            
+
             # Get the final AIMessage
             final_message = result["messages"][-1]
-            
+
             # Extract the actual string and render it as Markdown
             answer_text = extract_text(final_message)
             st.markdown(answer_text)
-            
+
             # Save the raw agent's response object to history so the Graph maintains context
             st.session_state.messages.append(final_message)

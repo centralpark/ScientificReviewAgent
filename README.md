@@ -4,8 +4,10 @@ LangGraph + Streamlit assistant for reviewing cancer literature from a Vertex AI
 
 ## Project Files
 
-- `literature_agent.py`: LangGraph workflow and tool definitions.
-- `app.py`: Streamlit chat UI that invokes the compiled graph.
+- `research_agent/agent.py`: LangGraph workflow and tool definitions.
+- `research_agent/app.py`: Streamlit chat UI that invokes the compiled graph.
+- `research_agent/__init__.py`: Package export for the compiled app.
+- `tools/research_tools.py`: Tool implementations used by the agent.
 - `requirements.txt`: Python dependencies.
 - `Dockerfile`: Container image definition for Cloud Run.
 - `deploy_cloud_run.sh`: Build and deploy script for Google Cloud Run.
@@ -43,7 +45,7 @@ export GOOGLE_API_KEY="your-google-api-key"
 4. Start the app:
 
 ```bash
-streamlit run app.py
+streamlit run research_agent/app.py
 ```
 
 ## Deploy To Google Cloud Run
@@ -76,4 +78,4 @@ The script builds a container image with Cloud Build, deploys to Cloud Run, and 
 
 - Do not commit real credentials.
 - Prefer using Secret Manager for `GOOGLE_API_KEY` in production.
-- `literature_agent.py` now requires `PROJECT_ID`, `DATA_STORE_ID`, and `GOOGLE_API_KEY` at runtime.
+- `research_agent/agent.py` now requires `PROJECT_ID`, `DATA_STORE_ID`, and `GOOGLE_API_KEY` at runtime.

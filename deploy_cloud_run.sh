@@ -9,6 +9,7 @@ SERVICE_NAME="scientific-review-agent"
 REPOSITORY="agent-deploy"
 IMAGE_TAG="$(date +%Y%m%d-%H%M%S)"
 IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${SERVICE_NAME}:${IMAGE_TAG}"
+TAVILY_API_KEY="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"
 
 echo "Using project: ${PROJECT_ID}"
 gcloud config set project "${PROJECT_ID}" >/dev/null
@@ -33,7 +34,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --platform managed \
   --region "${REGION}" \
   --allow-unauthenticated \
-  --set-env-vars "PROJECT_ID=${PROJECT_ID},DATA_STORE_ID=${DATA_STORE_ID},GOOGLE_API_KEY=${GOOGLE_API_KEY}"
+  --set-env-vars "PROJECT_ID=${PROJECT_ID},DATA_STORE_ID=${DATA_STORE_ID},GOOGLE_API_KEY=${GOOGLE_API_KEY},TAVILY_API_KEY=${TAVILY_API_KEY}"
 
 echo "Deployment complete."
 gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --format='value(status.url)'

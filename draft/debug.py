@@ -1,96 +1,149 @@
-import os
-from dotenv import load_dotenv
+from langchain.chat_models import init_chat_model
+from langchain.messages import HumanMessage, AIMessage, SystemMessage
 
-# Load local environment variables from .env before importing the agent.
-load_dotenv(override=False)
+model = init_chat_model("gpt-5-nano", api_key="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")
 
-PROJECT_ID = os.environ.get("PROJECT_ID")
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+system_msg = SystemMessage("You are a helpful assistant.")
+human_msg = HumanMessage("Hello, how are you?")
 
-from langchain_google_genai import ChatGoogleGenerativeAI
+# Use with chat models
+messages = [system_msg, human_msg]
+response = model.invoke(messages)  # Returns AIMessage
 
-model = ChatGoogleGenerativeAI(model="gemini-3.1-pro-preview", temperature=1.0, google_api_key=GOOGLE_API_KEY, project=PROJECT_ID)
+
+messages = [
+    SystemMessage("You are a poetry expert"),
+    HumanMessage("Write a haiku about spring"),
+    AIMessage("Cherry blossoms bloom...")
+]
+response = model.invoke(messages)
 
 
-conversation = [
-    {"role": "system", "content": "You are a helpful assistant that translates English to French."},
-    {"role": "user", "content": "Translate: I love programming."},
-    {"role": "assistant", "content": "J'adore la programmation."},
-    {"role": "user", "content": "Translate: I love building applications."}
+
+system_msg = SystemMessage("""
+You are a senior Python developer with expertise in web frameworks.
+Always provide code examples and explain your reasoning.
+Be concise but thorough in your explanations.
+""")
+
+messages = [
+    system_msg,
+    HumanMessage("How do I create a REST API?")
+]
+response = model.invoke(messages)
+
+# Best default
+md = response.content
+print(md)  # terminal with plain newlines
+
+
+
+# Create an AI message manually (e.g., for conversation history)
+ai_msg = AIMessage("I'd be happy to help you with that question!")
+
+# Add to conversation history
+messages = [
+    SystemMessage("You are a helpful assistant"),
+    HumanMessage("Can you help me?"),
+    ai_msg,  # Insert as if it came from the model
+    HumanMessage("Great! What's 2+2?")
 ]
 
-response = model.invoke(conversation)
-print(response)  # AIMessage("J'adore créer des applications.")
-
-for chunk in model.stream("Why do parrots have colorful feathers?"):
-    print(chunk.text, end="|", flush=True)
+response = model.invoke(messages)
+print(response.content)
 
 
-from langchain.tools import tool
+model = init_chat_model("gpt-5-nano", api_key="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")
 
-@tool
 def get_weather(location: str) -> str:
     """Get the weather at a location."""
-    return f"It's sunny in {location}."
-
+    ...
 
 model_with_tools = model.bind_tools([get_weather])
+response = model_with_tools.invoke("What's the weather in Paris?")
 
-response = model_with_tools.invoke("What's the weather like in Boston?")
 for tool_call in response.tool_calls:
-    # View tool calls made by the model
     print(f"Tool: {tool_call['name']}")
     print(f"Args: {tool_call['args']}")
+    print(f"ID: {tool_call['id']}")
+
+
+
+from langchain_community.tools.pubmed.tool import PubmedQueryRun
+from langchain_community.utilities.pubmed import PubMedAPIWrapper
+tool = PubmedQueryRun(api_wrapper=PubMedAPIWrapper(top_k_results=5, doc_content_chars_max=10000))
+response = tool.invoke("adverse effects of SIRT3 overexpression")
+print(response)
+
+
+
+from dotenv import load_dotenv
+load_dotenv(override=False)
+
+from langchain.agents import create_agent
+
+
+def get_weather(city: str) -> str:
+    """Get weather for a given city."""
+    return f"It's always sunny in {city}!"
+
+
+agent = create_agent(
+    model="gpt-5-nano",
+    tools=[get_weather],
+    system_prompt="You are a helpful assistant",
+)
+
+# Run the agent
+agent.invoke(
+    {"messages": [{"role": "user", "content": "What is the weather in San Francisco?"}]}
+)
 
 
 from pydantic import BaseModel, Field
-
-class Movie(BaseModel):
-    """A movie with details."""
-    title: str = Field(description="The title of the movie")
-    year: int = Field(description="The year the movie was released")
-    director: str = Field(description="The director of the movie")
-    rating: float = Field(description="The movie's rating out of 10")
-
-model_with_structure = model.with_structured_output(Movie)
-response = model_with_structure.invoke("Provide details about the movie Inception")
-print(response)  # Movie(title="Inception", year=2010, director="Christopher Nolan", rating=8.8)
-
-response = model.invoke("Why do parrots have colorful feathers?")
-reasoning_steps = [b for b in response.content_blocks if b["type"] == "reasoning"]
-print(" ".join(step["reasoning"] for step in reasoning_steps))
+from langchain.agents import create_agent
 
 
+class ContactInfo(BaseModel):
+    """Contact information for a person."""
+    name: str = Field(description="The name of the person")
+    email: str = Field(description="The email address of the person")
+    phone: str = Field(description="The phone number of the person")
 
-from vertexai.generative_models import GenerativeModel, Tool, grounding
+agent = create_agent(
+    model="gemini-3-flash-preview",
+    response_format=ContactInfo  # Auto-selects ProviderStrategy
+)
 
-# Give Gemini the power of live Google Search
-google_search_tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
-model = GenerativeModel("gemini-1.5-pro-001", tools=[google_search_tool])
+result = agent.invoke({
+    "messages": [{"role": "user", "content": "Extract contact info from: John Doe, john@example.com, (555) 123-4567"}]
+})
+
+print(result["structured_response"])
+# ContactInfo(name='John Doe', email='john@example.com', phone='(555) 123-4567')
 
 
-import os
-from langchain_community.tools.tavily_search import TavilySearchResults
-
-# You need a free API key from tavily.com
-os.environ["TAVILY_API_KEY"] = "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"
-
-# max_results limits how many websites it scrapes
-web_search_tool = TavilySearchResults(max_results=5)
-web_search_tool.name = "general_web_search"
-web_search_tool.description = "Search the web for up-to-date information, scientific news, and general facts."
+from dotenv import load_dotenv
 
 import os
-from langchain_tavily import TavilySearch
+load_dotenv(override=False)
 
-# Ensure your API key is set
-os.environ["TAVILY_API_KEY"] = "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"
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-# Initialize the new TavilySearch tool
-web_search_tool = TavilySearch(max_results=5)
+PROJECT_ID = os.environ.get("PROJECT_ID")
+LOCATION = "global"
+DATA_STORE_ID = os.environ.get("DATA_STORE_ID")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-# (Optional) You can still customize the name and description for your agent
-web_search_tool.name = "general_web_search"
-web_search_tool.description = "Search the web for up-to-date information, scientific news, and general facts."
 
-result = web_search_tool.invoke("COL17A protein")
+llm = ChatGoogleGenerativeAI(
+        model="gemini-3-flash-preview",
+        temperature=1.0,
+        google_api_key=GOOGLE_API_KEY,
+        project=PROJECT_ID
+    )
+
+structured = llm.with_structured_output(ContactInfo, method="json_schema")
+response = structured.invoke("Extract contact info from: John Doe, john@example.com, (555) 123-4567")
+print(response)
