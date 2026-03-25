@@ -43,10 +43,7 @@ def _require_runtime_config() -> None:
             + ". Set them before starting the app."
         )
 
-
-
 tools = [tavily_web_search]
-
 
 def build_agent_app():
     """Build and compile the LangGraph agent (import-safe)."""
