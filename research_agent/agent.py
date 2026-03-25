@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
 
 # LangChain / Google Cloud imports
@@ -9,6 +11,10 @@ from langchain_core.messages import SystemMessage
 # LangGraph imports
 from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
+
+repo_root = Path(__file__).resolve().parents[3]  # research_agent/
+sys.path.insert(0, str(repo_root))
+
 from tools import compute_date, search_aacr_abstracts, tavily_web_search
 
 # -------------------------------------------------------------------
@@ -97,7 +103,7 @@ if __name__ == "__main__":
     # user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
 
     user_query = """
-    What are the adverse or pathological effects of SIRT3 over-expression? Please categorize the adverse effects by tissue type or disease state (e.g., oncology, metabolic, cardiac). Structure your response strictly by the strength of evidence in the following descending order:
+    What are the effects (either positive or negative) of SIRT3 over-expression in Osteoarthritis? Structure your response strictly by the strength of evidence in the following descending order:
     1. Clinical/Human Cohort data
     2. In Vivo (Animal models)
     3. In Vitro (Cell lines/organoids).

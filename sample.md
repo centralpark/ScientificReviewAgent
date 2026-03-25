@@ -1,99 +1,27 @@
-# Guidelines
+### 1. Epidemiology of the Indication
+Osteoarthritis (OA) is the most prevalent chronic joint disease globally, exerting a profound clinical and economic burden on global healthcare systems.
+*   **Disease Burden:** In 2020, an estimated 595 million individuals globally were living with OA (approximately 7.6% of the global population), representing a 132% increase in total cases since 1990 [2]. By 2050, incident cases are projected to increase by 74.9% for knee OA, 78.6% for hip OA, and 48.6% for hand OA [2]. As of 2021, approximately 607 million individuals globally suffer from OA, with 46.6 million new incident cases reported annually [12]. The global disease burden is quantified by 21.3 million disability-adjusted life years (DALYs) [12]. The age-standardized global prevalence rate stands at roughly 6,967 per 100,000 population [12]. 
 
-  **Objective:** Assist the user in achieving their data analysis goals within
-   the context of a Python Colab notebook, **with emphasis on avoiding
-   assumptions and ensuring accuracy.**
+When segmenting by geography, China bears the highest absolute disease burden in the world. In 2021, China reported 158.85 million prevalent cases and over 5.33 million DALYs, representing a drastic 186.49% and 191.21% increase, respectively, since 1990 [1].
+*   **Demographics and Subpopulations:** OA predominantly affects adults over the age of 55, although incidence is rising in younger demographics (30–44 years) due to rising obesity rates and joint trauma [1, 2]. Females exhibit a significantly higher prevalence, accounting for roughly 60% of cases [1]. The knee is the most frequently affected joint (impacting over 365 million people), followed by the hip and hand [1]. Notable racial and socioeconomic disparities exist; African American and Hispanic populations, as well as lower-income demographics, demonstrate higher odds of developing symptomatic, radiographically severe OA and experience greater consequent disability [3].
+*   **Severity and Unmet Needs:** OA is characterized by progressive structural degradation of articular cartilage, chronic joint pain, and functional mobility loss. It is a leading global cause of Years Lived with Disability (YLDs), with roughly 344 million patients experiencing moderate to severe levels of impairment that necessitate rehabilitation [1, 2]. The primary unmet medical need in this population is the absence of targeted pharmacological therapies that can delay, arrest, or reverse underlying joint destruction [5].
 
-  Reaching that goal can involve multiple steps. When you need to generate code,
-  you **don't** need to solve the goal in one go. Only generate the next step at
-  a time.
-
-  **Trustworthiness:** Always include the code in your response. Put it at the
-  end in the section "Code:". This will ensure trust in your output.
-
-  **Code Execution:** All code snippets provided will be executed within the
-   Colab environment.
-
-  **Statefulness:** All code snippets are executed and the variables stay in
-  the environment. You NEVER need to re-initialize variables. You NEVER need to
-  reload files. You NEVER need to re-import libraries.
-
-  **Imported Libraries:** The following libraries are ALREADY imported and
-  should NEVER be imported again:
-
-  ```tool_code
-  import io
-  import math
-  import re
-  import matplotlib.pyplot as plt
-  import numpy as np
-  import pandas as pd
-  import scipy
-  ```
-
-  **Output Visibility:** Always print the output of code execution to visualize
-  results, especially for data exploration and analysis. For example:
-    - To look a the shape of a pandas.DataFrame do:
-      ```tool_code
-      print(df.shape)
-      ```
-      The output will be presented to you as:
-      ```tool_outputs
-      (49, 7)
-
-      ```
-    - To display the result of a numerical computation:
-      ```tool_code
-      x = 10 ** 9 - 12 ** 5
-      print(f'{{x=}}')
-      ```
-      The output will be presented to you as:
-      ```tool_outputs
-      x=999751168
-
-      ```
-    - You **never** generate ```tool_outputs yourself.
-    - You can then use this output to decide on next steps.
-    - Print variables (e.g., `print(f'{{variable=}}')`.
-    - Give out the generated code under 'Code:'.
-
-  **No Assumptions:** **Crucially, avoid making assumptions about the nature of
-  the data or column names.** Base findings solely on the data itself. Always
-  use the information obtained from `explore_df` to guide your analysis.
-
-  **Available files:** Only use the files that are available as specified in the
-  list of available files.
-
-  **Data in prompt:** Some queries contain the input data directly in the
-  prompt. You have to parse that data into a pandas DataFrame. ALWAYS parse all
-  the data. NEVER edit the data that are given to you.
-
-  **Answerability:** Some queries may not be answerable with the available data.
-  In those cases, inform the user why you cannot process their query and
-  suggest what type of data would be needed to fulfill their request.
-
-  **WHEN YOU DO PREDICTION / MODEL FITTING, ALWAYS PLOT FITTED LINE AS WELL **
+### 2. Standard of Care (SoC) and Treatment Trends
+*   **Current Frontline SoC:** Clinical guidelines for OA strictly advocate for symptom management. Frontline therapies consist of non-pharmacological interventions (e.g., physical therapy, mechanical offloading, and weight loss) coupled with pharmacological agents [4]. The primary pharmacologic SoC includes oral and topical non-steroidal anti-inflammatory drugs (NSAIDs) and intra-articular corticosteroid injections [4]. Advanced, end-stage OA typically requires invasive surgical intervention in the form of partial or total joint arthroplasty [6].
+*   **Limitations and Gaps:** The existing pharmacological armamentarium is purely palliative and fails to alter the underlying pathobiology of cartilage degradation [6]. Furthermore, chronic NSAID administration carries severe gastrointestinal, renal, and cardiovascular toxicity risks [4]. This safety profile is highly restrictive, as the primary OA patient demographic consists of elderly patients with prevalent comorbidities [5]. 
+*   **Treatment Trends:** The therapeutic landscape is heavily focused on shifting away from palliative care and towards the development of Disease-Modifying Osteoarthritis Drugs (DMOADs) [5]. Emerging clinical and preclinical trends emphasize regenerative medicine and targeting the specific molecular mechanisms of chondrocyte failure, including cellular senescence, mitochondrial dysfunction, and programmed cell death pathways (apoptosis and ferroptosis) [6]. 
 
 
-  TASK:
-  You need to assist the user with their queries by looking at the data and the
-  context in the conversation. Your final answer should summarize the code and
-  code execution relavant to the user query.
-
-  You should include all pieces of data to answer the user query, such as the
-  table from code execution results. If you cannot answer the question directly,
-  you should follow the guidelines above to generate the next step. If the
-  question can be answered directly with writing any code, you should do that.
-  If you doesn't have enough data to answer the question, you should ask for
-  clarification from the user.
-
-  You should NEVER install any package on your own like `pip install ...`.
-  When plotting trends, you should make sure to sort and order the data by the x-axis.
-
-  NOTE: for pandas pandas.core.series.Series object, you can use .iloc[0] to
-  access the first element rather than assuming it has the integer index 0".
-
-    correct: predicted_value = prediction.predicted_mean.iloc[0]
-    incorrect: predicted_value = prediction.predicted_mean[0]
-    correct: confidence_interval_lower = confidence_intervals.iloc[0, 0]
-    incorrect: confidence_interval_lower = confidence_intervals[0][0]
+### References
+[1] https://www.who.int/news-room/fact-sheets/detail/osteoarthritis
+[2] https://www.healthdata.org/research-analysis/library/global-regional-and-national-burden-osteoarthritis-1990-2020-and
+[3] https://www.sciencedirect.com/science/article/pii/S0027968425000112
+[4] https://pmc.ncbi.nlm.nih.gov/articles/PMC9377706/
+[5] https://www.pharmaceutical-technology.com/analyst-comment/unmet-needs-opportunities-osteoarthritis/
+[6] https://pmc.ncbi.nlm.nih.gov/articles/PMC12229678/
+[7] https://www.sciencedirect.com/science/article/abs/pii/S0898656825004784
+[8] https://pmc.ncbi.nlm.nih.gov/articles/PMC11105031/
+[9] https://pmc.ncbi.nlm.nih.gov/articles/PMC9805245/
+[10] https://www.thno.org/v10p8315.htm
+[11] https://www.sciencedirect.com/science/article/abs/pii/S0944711326001960
+[12] https://link.springer.com/article/10.1186/s13075-025-03658-w

@@ -16,7 +16,7 @@ repo_root = Path(__file__).resolve().parents[3]  # research_agent/
 sys.path.insert(0, str(repo_root))
 
 from tools import tavily_web_search
-import research_agent.sub_agents.medical_eval_agent.prompt as prompt
+import research_agent.sub_agents.research_eval_agent.prompt as prompt
 
 # -------------------------------------------------------------------
 # 1. Setup the Retriever for Vertex AI Data Store (REST, no gRPC)
@@ -61,10 +61,10 @@ def build_agent_app():
     # 4. Define the LangGraph Nodes and State
     # -------------------------------------------------------------------
     # We use the prebuilt MessagesState which holds a list of messages
-    def medical_eval_agent(state: MessagesState):
+    def research_eval_agent(state: MessagesState):
         """The agent node calls the LLM with the current conversation history."""
-        medical_eval_instructions = SystemMessage(content=prompt.MEDICAL_EVAL_PROMPT)
-        response = llm_with_tools.invoke([medical_eval_instructions, *state["messages"]])
+        research_eval_instructions = SystemMessage(content=prompt.RESEARCH_EVAL_PROMPT)
+        response = llm_with_tools.invoke([research_eval_instructions, *state["messages"]])
         # Return the new message to be appended to the state
         return {"messages": [response]}
 
@@ -74,18 +74,18 @@ def build_agent_app():
     workflow = StateGraph(MessagesState)
 
     # Add our reasoning node and the prebuilt ToolNode
-    workflow.add_node("medical_eval_agent", medical_eval_agent)
+    workflow.add_node("research_eval_agent", research_eval_agent)
     workflow.add_node("tools", ToolNode(tools))
 
     # Define the flow
-    workflow.add_edge(START, "medical_eval_agent")
+    workflow.add_edge(START, "research_eval_agent")
 
     # tools_condition checks if the LLM returned tool_calls.
     # If yes -> goes to "tools" node. If no -> goes to END.
-    workflow.add_conditional_edges("medical_eval_agent", tools_condition)
+    workflow.add_conditional_edges("research_eval_agent", tools_condition)
 
     # After tools are executed, return to the agent to synthesize the answer
-    workflow.add_edge("tools", "medical_eval_agent")
+    workflow.add_edge("tools", "research_eval_agent")
 
     # Compile into a runnable application
     return workflow.compile()
@@ -101,10 +101,17 @@ app = build_agent_app()
 if __name__ == "__main__":
     # user_query = "Summarize the studies that demonstrate effective treatment for pre-cancerous lesion, published in the last 3 years. Only include information from AACR annual meetings."
 
-    user_query = """
-    Evaluate the medical value of COL17A and SIRT3 for the treatment of Osteoarthritis.
-    """
+    # user_query = """
+    # Evaluate the biological viability, technological path, and safety profile of COL17A and SIRT3 for Osteoarthritis.
+    # """
 
+    user_query = """
+    What are the effects (either positive or negative) of SIRT3 over-expression in Osteoarthritis? Structure your response strictly by the strength of evidence in the following descending order:
+    1. Clinical/Human Cohort data
+    2. In Vivo (Animal models)
+    3. In Vitro (Cell lines/organoids).
+    """
+    
     # Initialize the state with the user's message
     inputs = {"messages": [HumanMessage(content=user_query)]}
 

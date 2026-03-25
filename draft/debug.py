@@ -51,7 +51,6 @@ response = model.invoke(messages)
 print(response.content)
 
 
-model = init_chat_model("gpt-5-nano", api_key="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")
 
 def get_weather(location: str) -> str:
     """Get the weather at a location."""
