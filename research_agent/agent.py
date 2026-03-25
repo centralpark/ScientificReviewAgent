@@ -107,6 +107,7 @@ if __name__ == "__main__":
     1. Clinical/Human Cohort data
     2. In Vivo (Animal models)
     3. In Vitro (Cell lines/organoids).
+    research evaluation
     """
 
     # Initialize the state with the user's message
