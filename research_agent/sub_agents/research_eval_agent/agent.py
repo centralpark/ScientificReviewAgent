@@ -15,6 +15,12 @@ from langgraph.prebuilt import ToolNode, tools_condition
 repo_root = Path(__file__).resolve().parents[3]  # research_agent/
 sys.path.insert(0, str(repo_root))
 
+from research_agent.report_schema import AgentReport, AgentType
+from research_agent.reporting import (
+    build_agent_report_from_markdown,
+    extract_text,
+    save_report_outputs,
+)
 from tools import tavily_web_search
 import research_agent.sub_agents.research_eval_agent.prompt as prompt
 
@@ -44,6 +50,7 @@ def _require_runtime_config() -> None:
         )
 
 tools = [tavily_web_search]
+
 
 def build_agent_app():
     """Build and compile the LangGraph agent (import-safe)."""
@@ -92,6 +99,41 @@ def build_agent_app():
 
 
 app = build_agent_app()
+MODEL_NAME = "gemini-3.1-pro-preview"
+
+
+def run_markdown_report(query: str) -> str:
+    inputs = {"messages": [HumanMessage(content=query)]}
+    result = app.invoke(inputs)
+    final_message = result["messages"][-1]
+    return extract_text(final_message)
+
+
+def run_structured_report(
+    query: str,
+    *,
+    target: str | None = None,
+    indication: str | None = None,
+    markdown_path: str | Path | None = None,
+    json_path: str | Path | None = None,
+) -> AgentReport:
+    markdown_text = run_markdown_report(query)
+    report = build_agent_report_from_markdown(
+        markdown_text,
+        agent_type=AgentType.RESEARCH_EVAL,
+        query=query,
+        target=target,
+        indication=indication,
+        model_name=MODEL_NAME,
+        source_markdown_file=str(markdown_path) if markdown_path is not None else None,
+    )
+    save_report_outputs(
+        report,
+        markdown_text,
+        markdown_path=markdown_path,
+        json_path=json_path,
+    )
+    return report
 
 
 # -------------------------------------------------------------------
@@ -112,13 +154,11 @@ if __name__ == "__main__":
     3. In Vitro (Cell lines/organoids).
     """
     
-    # Initialize the state with the user's message
-    inputs = {"messages": [HumanMessage(content=user_query)]}
-
-
-    # for event in app.stream(inputs, stream_mode="updates"):
-    #     for node_name, state_update in event.items():
-    #         print(f"\n🟢 [DEBUG] Node executed: {node_name}")
-    #         print(f"🔄 [DEBUG] State updated with: {state_update}")
-
-    app.invoke(inputs)
+    report = run_structured_report(
+        user_query,
+        target="SIRT3",
+        indication="Osteoarthritis",
+        markdown_path=repo_root / "draft" / "research_eval_report.md",
+        json_path=repo_root / "draft" / "research_eval_report.json",
+    )
+    print(report.model_dump_json(indent=2))
